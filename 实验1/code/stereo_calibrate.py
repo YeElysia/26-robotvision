@@ -321,11 +321,11 @@ def load_pairs(root: Path, pattern: tuple[int, int]):
 
 
 def parser() -> argparse.ArgumentParser:
-    p = argparse.ArgumentParser(description="D435 stereo chessboard calibration (12x10 squares, 20 mm)")
+    p = argparse.ArgumentParser(description="D435 stereo chessboard calibration (12x9 squares, 20 mm)")
     p.add_argument("--images", type=Path, default=Path("calibration_images"))
     p.add_argument("--offline", action="store_true", help="Calibrate existing image pairs without a camera or GUI")
     p.add_argument("--cols", type=int, default=11, help="INNER corner columns, not square count (default 11)")
-    p.add_argument("--rows", type=int, default=9, help="INNER corner rows, not square count (default 9)")
+    p.add_argument("--rows", type=int, default=8, help="INNER corner rows, not square count (default 8)")
     p.add_argument("--square-mm", type=float, default=20)
     p.add_argument("--output", type=Path, default=Path("calibration.json"))
     p.add_argument("--serial")

@@ -77,18 +77,18 @@ python stereo_measure.py --roi 300 180 650 400 --min-area 30 --max-area 1500
 
 支持零畸变或标准 Brown-Conrady 红外标定；对非零的其他畸变模型明确拒绝，避免静默使用错误相机模型。默认使用出厂标定，也可通过 `--calibration` 使用下述棋盘格自标定参数。
 
-## 棋盘格双目标定（12×10，格长 2 cm）
+## 棋盘格双目标定（12×9，格长 2 cm）
 
 标定窗口中的状态、角度分区、进度和操作提示为中文，通过 Pillow 绘制（OpenCV 原生 `putText` 不支持中文）。默认查找系统中文字体；Ubuntu/Debian 缺少字体时安装 `sudo apt install fonts-noto-cjk`，或使用 `--font /路径/中文字体.ttf` 指定字体。为兼容不同 OpenCV 窗口后端，窗口标题保留英文。
 
-默认将 **12×10 理解为方格数量**，因此检测 **11×9 个内角点**；每格边长 **20 mm**，方格区域为 240×200 mm（不含白边）。若实际是 **12×10 个内角点**，请增加 `--cols 12 --rows 10`，对应 13×11 个方格。打印选择实际尺寸、关闭缩放，并用尺检查格长；贴在平整硬板上，保留白边。
+默认将 **12×9 理解为方格数量**，因此检测 **11×8 个内角点**；每格边长 **20 mm**，方格区域为 240×180 mm（不含白边）。若实际是 **12×9 个内角点**，请增加 `--cols 12 --rows 9`，对应 13×10 个方格。打印选择实际尺寸、关闭缩放，并用尺检查格长；贴在平整硬板上，保留白边。
 
 ```bash
 # 开启同步左右红外预览，关闭红外散斑
 python stereo_calibrate.py
 
-# 如果 12×10 指的是内角点数
-python stereo_calibrate.py --cols 12 --rows 10 --square-mm 20
+# 如果 12×9 指的是内角点数
+python stereo_calibrate.py --cols 12 --rows 9 --square-mm 20
 
 # 测量时使用自标定结果（分辨率、设备必须与标定一致）
 python stereo_measure.py --calibration calibration.json

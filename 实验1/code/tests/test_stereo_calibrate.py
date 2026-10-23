@@ -14,22 +14,22 @@ from stereo_measure import Calibration
 def test_board_defaults_and_detection():
     args = parser().parse_args([])
     points = board_points(args.cols, args.rows, args.square_mm / 1000)
-    assert points.shape == (99, 3)
-    np.testing.assert_allclose(points[-1], [.2, .16, 0], atol=1e-7)
-    image = np.full((500, 600), 255, np.uint8)
-    for y in range(10):
+    assert points.shape == (88, 3)
+    np.testing.assert_allclose(points[-1], [.2, .14, 0], atol=1e-7)
+    image = np.full((440, 570), 255, np.uint8)
+    for y in range(9):
         for x in range(12):
             if (x + y) % 2 == 0:
-                image[50+y*40:50+(y+1)*40, 60+x*40:60+(x+1)*40] = 0
-    corners = find_corners(image, (11, 9))
-    assert corners is not None and corners.shape == (99, 1, 2)
-    assert find_corners(np.full_like(image, 255), (11, 9)) is None
+                image[40+y*40:40+(y+1)*40, 45+x*40:45+(x+1)*40] = 0
+    corners = find_corners(image, (11, 8))
+    assert corners is not None and corners.shape == (88, 1, 2)
+    assert find_corners(np.full_like(image, 255), (11, 8)) is None
     with pytest.raises(ValueError):
-        board_points(11, 9, 0)
+        board_points(11, 8, 0)
 
 
 def test_synthetic_calibration(tmp_path):
-    objects = board_points(11, 9, .02)
+    objects = board_points(11, 8, .02)
     lk = np.array([[800., 0, 640], [0, 810., 360], [0, 0, 1]])
     rk = np.array([[805., 0, 638], [0, 815., 362], [0, 0, 1]])
     rotation = cv2.Rodrigues(np.array([.002, -.004, .001]))[0]
@@ -70,11 +70,11 @@ def test_pair_resolution_rejected(tmp_path):
     cv2.imwrite(str(pair / 'left.png'), np.zeros((100, 200), np.uint8))
     cv2.imwrite(str(pair / 'right.png'), np.zeros((101, 200), np.uint8))
     with pytest.raises(ValueError, match='same original resolution'):
-        load_pairs(tmp_path, (11, 9))
+        load_pairs(tmp_path, (11, 8))
 
 
 def test_pose_and_coverage():
-    objects = board_points(11, 9, .02)
+    objects = board_points(11, 8, .02)
     k = np.array([[800., 0, 640], [0, 800., 360], [0, 0, 1]])
     coverage = Coverage(3)
     for rv, expected in [(np.zeros(3), 4), (np.array([0., .4, 0]), 5),
@@ -118,7 +118,7 @@ def test_auto_capture_completes_and_saves(tmp_path, monkeypatch):
         np.zeros((240, 320), np.uint8), np.zeros((240, 320), np.uint8), None),
         close=lambda: closed.append(True))
     monkeypatch.setattr(module, 'RealSenseSource', lambda args: source)
-    monkeypatch.setattr(module, 'find_corners', lambda *a, **kw: np.zeros((99, 1, 2), np.float32))
+    monkeypatch.setattr(module, 'find_corners', lambda *a, **kw: np.zeros((88, 1, 2), np.float32))
     monkeypatch.setattr(module.Coverage, 'novel', lambda *a: True)
     def pose(*a):
         count = len(list(args.images.glob('*/left.png')))
@@ -130,7 +130,7 @@ def test_auto_capture_completes_and_saves(tmp_path, monkeypatch):
     for name in ('namedWindow', 'resizeWindow', 'imshow', 'destroyAllWindows', 'drawChessboardCorners'):
         monkeypatch.setattr(cv2, name, lambda *a: None)
     monkeypatch.setattr(cv2, 'waitKey', lambda *a: -1)
-    left, right, size, used, _ = collect(args, (11, 9))
+    left, right, size, used, _ = collect(args, (11, 8))
     assert len(used) == len(left) == len(right) == 18
     assert closed == [True]
     assert size == (320, 240)
@@ -138,7 +138,7 @@ def test_auto_capture_completes_and_saves(tmp_path, monkeypatch):
     progress = json.loads((args.images / 'capture_progress.json').read_text())
     assert progress['progress_percent'] == 100
     monkeypatch.setattr(module, 'calibrate_pairs', lambda *a: (cal, {'pairs': 18, 'stereo_rms_px': .1}))
-    write_calibration(args, board_points(11, 9, .02), left, right, size, used)
+    write_calibration(args, board_points(11, 8, .02), left, right, size, used)
     assert args.output.is_file()
     report = json.loads((tmp_path / 'result_report.json').read_text())
     assert report['pairs'] == 18
