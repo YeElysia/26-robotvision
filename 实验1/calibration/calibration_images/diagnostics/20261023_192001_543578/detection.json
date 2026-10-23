@@ -1,0 +1,24 @@
+{
+  "left": {
+    "detected": false,
+    "corners": 0,
+    "size": [
+      1280,
+      720
+    ],
+    "min": 16,
+    "max": 255,
+    "mean": 78.19308376736112
+  },
+  "right": {
+    "detected": false,
+    "corners": 0,
+    "size": [
+      1280,
+      720
+    ],
+    "min": 16,
+    "max": 255,
+    "mean": 79.0264626736111
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "device": "RealSense D435",
+  "serial": "109622073355",
+  "fps": 30,
+  "emitter_enabled": false,
+  "depth_stream": false,
+  "average_frames": 1,
+  "board_pose": {
+    "yaw_deg": 19.958082462990212,
+    "pitch_deg": -3.3177394152968023,
+    "distance_m": 0.3217614576852654,
+    "center_px": [
+      880.6312255859375,
+      260.1512756347656
+    ],
+    "bin": 5,
+    "pose_rms_px": 0.13330477476119995
+  },
+  "inner_corners": [
+    11,
+    8
+  ],
+  "square_mm": 20.0
+}
